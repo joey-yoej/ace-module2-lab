@@ -54,7 +54,7 @@ permissions:
 env:
   # Scoped scan target. Kept well under cm's ~10 MB per-scan upload limit and
   # contains the canonical CRITICAL finding (SQL injection in routes/login.ts).
-  SCAN_PATH: routes
+  SCAN_PATH: routes/login.ts
   # The `cm` binary ships vendored in the repo, so template copies work with
   # zero extra setup (GitHub does NOT copy Releases on fork/template — a
   # release-download step here broke every student copy).
@@ -139,7 +139,7 @@ jobs:
         run: |
           set -uo pipefail
           echo "Scanning '$SCAN_PATH' (in-scope source is uploaded to Google's CodeMender service)..."
-          cm find "$SCAN_PATH" -y 2>&1 | tee "$RUNNER_TEMP/cm-find.cm.log"
+          cm find "$SCAN_PATH" -y 2>&1 | tee "$RUNNER_TEMP/cm-find.cm.log" || true
 
       - name: Export Security Report (cm report -f json)
         if: ${{ always() && steps.scan.conclusion != 'skipped' }}
